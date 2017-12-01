@@ -25,7 +25,7 @@ SECRET_KEY = '3gyk8idk1tse*_zfah#_#u54yr9-_6vw2bz$j#m7zqn8s7$idd'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['restburger.herokuapp.com']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
