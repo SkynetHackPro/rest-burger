@@ -2,6 +2,7 @@ from adminsortable.models import SortableMixin
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import UserManager, PermissionsMixin
 from django.db import models
+from mptt.models import MPTTModel
 
 from burgershop.userManager import CustomUserManager
 
@@ -63,9 +64,11 @@ class MenuItem(models.Model):
         verbose_name_plural = 'Блюда'
 
 
-class MenuCategory(SortableMixin):
+class MenuCategory(MPTTModel):
     name = models.CharField(verbose_name='Название категории', max_length=128)
-    items = models.ManyToManyField(MenuItem, verbose_name='Блюдо')
+    items = models.ManyToManyField(MenuItem, verbose_name='Блюдо', blank=True)
+    parent = models.ForeignKey('self', verbose_name=u'Родительская категория',
+                               related_name='child', default=None, blank=True, null=True)
 
     class Meta:
         verbose_name = 'Катеогрия меню'
@@ -73,7 +76,16 @@ class MenuCategory(SortableMixin):
 
 
 class Order(models.Model):
+    STATUS_PAYED = 'p'
+    STATUS_REJECTED = 'r'
+
+    STATUS_CHOICES = (
+        (STATUS_PAYED, 'Оплачен'),
+        (STATUS_REJECTED, 'Отменен')
+    )
+
     dealer = models.ForeignKey(User, verbose_name='Оператор')
+    status = models.CharField(verbose_name='Статус заказа', choices=STATUS_CHOICES, default=STATUS_PAYED, max_length=1)
 
     class Meta:
         verbose_name = 'Заказ'

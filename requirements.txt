@@ -3,4 +3,4 @@ gunicorn==19.7.1
 pytz==2017.3
 dj-database-url==0.4.2
 psycopg2==2.7.3.2
-django-admin-sortable==2.1.1
+django-mptt==0.8.7

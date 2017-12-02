@@ -1,9 +1,11 @@
+from adminsortable.admin import SortableAdmin
 from django import forms
 from django.contrib import admin
 
 from django.apps import apps
+from mptt.admin import DraggableMPTTAdmin
 
-from burgershop.models import User
+from burgershop.models import User, MenuCategory, MenuItem, Order, OrderItem, BurgerShop, City
 
 app = apps.get_app_config('burgershop')
 
@@ -27,8 +29,42 @@ class CustomUserAdmin(admin.ModelAdmin):
     form = UserForm
 
 
-admin.site.register(User, CustomUserAdmin)
+class CategoryAdmin(DraggableMPTTAdmin):
+    mptt_level_indent = 50
+    fields = ('name', 'items')
+    filter_horizontal = ('items', )
 
-# for model_name, model in app.models.items():
-#     if model_name != 'user':
-#         admin.site.register(model)
+
+class MenuItemAdmin(admin.ModelAdmin):
+    list_display = ('name', 'price')
+
+
+class OrderItemsInline(admin.TabularInline):
+    model = OrderItem
+    extra = 0
+    readonly_fields = ('item', 'price')
+    can_delete = False
+
+    def has_add_permission(self, request):
+        return False
+
+
+class OrderAdmin(admin.ModelAdmin):
+    inlines = (OrderItemsInline, )
+    readonly_fields = ('dealer', )
+
+
+class BurgerShopAdmin(admin.ModelAdmin):
+    pass
+
+
+class CityAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(User, CustomUserAdmin)
+admin.site.register(MenuCategory, CategoryAdmin)
+admin.site.register(MenuItem, MenuItemAdmin)
+admin.site.register(Order, OrderAdmin)
+admin.site.register(BurgerShop, BurgerShopAdmin)
+admin.site.register(City, CityAdmin)
