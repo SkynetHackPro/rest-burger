@@ -32,7 +32,7 @@ class CustomUserAdmin(admin.ModelAdmin):
 class CategoryAdmin(DraggableMPTTAdmin):
     mptt_level_indent = 50
     fields = ('name', 'items')
-    filter_horizontal = ('items', )
+    filter_horizontal = ('items',)
 
 
 class MenuItemAdmin(admin.ModelAdmin):
@@ -50,8 +50,8 @@ class OrderItemsInline(admin.TabularInline):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    inlines = (OrderItemsInline, )
-    readonly_fields = ('dealer', )
+    inlines = (OrderItemsInline,)
+    readonly_fields = ('dealer',)
 
 
 class BurgerShopAdmin(admin.ModelAdmin):
