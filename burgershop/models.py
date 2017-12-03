@@ -3,7 +3,10 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import UserManager, PermissionsMixin
 from django.db import models
 from mptt.models import MPTTModel
+import hashlib
+import time
 
+from application import settings
 from burgershop.userManager import CustomUserManager
 
 
@@ -28,10 +31,19 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.username
 
+    def authenticate_by_token(self):
+        token = hashlib.sha256((self.username + str(self.pk) + settings.SECRET_KEY + str(time.time())).encode('utf-8')
+        ).hexdigest()
+        self.user_token.create(
+            token=token,
+            user=self,
+        )
+        return token
+
 
 class AuthToken(models.Model):
     user = models.ForeignKey(User, related_name='user_token')
-    token = models.CharField(max_length=12)
+    token = models.CharField(max_length=64)
 
     class Meta:
         verbose_name = 'Токен авторизации'
