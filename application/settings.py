@@ -25,6 +25,8 @@ SECRET_KEY = '3gyk8idk1tse*_zfah#_#u54yr9-_6vw2bz$j#m7zqn8s7$idd'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+STATIC_ROOT = 'static'
+
 ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -46,10 +48,11 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'burgershop.middleware.TokenAuthorizationMiddleware',
 ]
 
 ROOT_URLCONF = 'application.urls'

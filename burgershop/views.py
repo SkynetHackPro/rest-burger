@@ -1,3 +1,8 @@
-from django.shortcuts import render
+import json
 
-# Create your views here.
+from django.http import HttpResponse
+
+
+def authorisation(request):
+    print(request.user)
+    return HttpResponse(123)

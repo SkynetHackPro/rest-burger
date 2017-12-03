@@ -30,7 +30,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class AuthToken(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, related_name='user_token')
     token = models.CharField(max_length=12)
 
     class Meta:
