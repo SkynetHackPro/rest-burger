@@ -33,8 +33,13 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ALLOWED_HOSTS = ['*']
 
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = '/tmp' # change this to a proper location
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.mailtrap.io'
+EMAIL_HOST_USER = 'fb47063eb11502'
+EMAIL_HOST_PASSWORD = 'd3b09442ab4187'
+EMAIL_PORT = '2525'
 
 ADMINS = [
     ('admin', 'admin@localhost')
