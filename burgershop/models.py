@@ -1,8 +1,7 @@
 import datetime
 
-from adminsortable.models import SortableMixin
 from django.contrib.auth.base_user import AbstractBaseUser
-from django.contrib.auth.models import UserManager, PermissionsMixin
+from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from mptt.models import MPTTModel
 import hashlib
