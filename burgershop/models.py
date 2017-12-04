@@ -1,3 +1,5 @@
+import datetime
+
 from adminsortable.models import SortableMixin
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import UserManager, PermissionsMixin
@@ -37,11 +39,11 @@ class BurgerShop(models.Model):
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(verbose_name='Логин (Имя пользователя)', max_length=255, unique=True, default=None,
                                 error_messages={'unique': 'Пользователь с таким именем существует'})
-    is_staff = models.BooleanField(verbose_name='Имеет доступ в админку', default=False)
+    is_staff = models.BooleanField(verbose_name='Управляющий', default=False)
 
     is_dealer = models.BooleanField(verbose_name='Оператор', default=False)
 
-    burgershop = models.ForeignKey(BurgerShop, verbose_name=u'Место работы', default=None, null=True, blank=True)
+    burgershop = models.ForeignKey(BurgerShop, verbose_name=u'Рестроан', default=None, null=True, blank=True)
 
     USERNAME_FIELD = 'username'
 
@@ -115,6 +117,7 @@ class Order(models.Model):
 
     dealer = models.ForeignKey(User, verbose_name='Оператор')
     status = models.CharField(verbose_name='Статус заказа', choices=STATUS_CHOICES, default=STATUS_PAYED, max_length=1)
+    time = models.DateTimeField(verbose_name='Время создания', default=datetime.datetime.now)
 
     class Meta:
         verbose_name = 'Заказ'
