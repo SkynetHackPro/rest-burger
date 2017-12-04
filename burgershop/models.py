@@ -7,6 +7,7 @@ import hashlib
 import time
 
 from application import settings
+from burgershop.menuManager import CategoryManager
 from burgershop.userManager import CustomUserManager
 
 
@@ -75,6 +76,9 @@ class MenuItem(models.Model):
         verbose_name = 'Блюдо'
         verbose_name_plural = 'Блюда'
 
+    def __str__(self):
+        return self.name
+
 
 class MenuCategory(MPTTModel):
     name = models.CharField(verbose_name='Название категории', max_length=128)
@@ -82,9 +86,14 @@ class MenuCategory(MPTTModel):
     parent = models.ForeignKey('self', verbose_name=u'Родительская категория',
                                related_name='child', default=None, blank=True, null=True)
 
+    objects = CategoryManager()
+
     class Meta:
         verbose_name = 'Катеогрия меню'
         verbose_name_plural = 'Категории меню'
+
+    def __str__(self):
+        return self.name
 
 
 class Order(models.Model):
