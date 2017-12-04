@@ -11,12 +11,37 @@ from burgershop.menuManager import CategoryManager
 from burgershop.userManager import CustomUserManager
 
 
+class City(models.Model):
+    name = models.CharField(verbose_name='Название города', max_length=128)
+
+    class Meta:
+        verbose_name = 'Город'
+        verbose_name_plural = 'Города'
+
+    def __str__(self):
+        return self.name
+
+
+class BurgerShop(models.Model):
+    name = models.CharField(verbose_name='Название бургерной', max_length=256)
+    city = models.ForeignKey(City, verbose_name='Город')
+
+    class Meta:
+        verbose_name = 'Бургерная'
+        verbose_name_plural = 'Бургерные'
+
+    def __str__(self):
+        return self.name
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(verbose_name='Логин (Имя пользователя)', max_length=255, unique=True, default=None,
                                 error_messages={'unique': 'Пользователь с таким именем существует'})
     is_staff = models.BooleanField(verbose_name='Имеет доступ в админку', default=False)
 
     is_dealer = models.BooleanField(verbose_name='Оператор', default=False)
+
+    burgershop = models.ForeignKey(BurgerShop, verbose_name=u'Место работы', default=None, null=True, blank=True)
 
     USERNAME_FIELD = 'username'
 
@@ -49,23 +74,6 @@ class AuthToken(models.Model):
     class Meta:
         verbose_name = 'Токен авторизации'
         verbose_name_plural = 'Токены авторизации'
-
-
-class City(models.Model):
-    name = models.CharField(verbose_name='Название города', max_length=128)
-
-    class Meta:
-        verbose_name = 'Город'
-        verbose_name_plural = 'Города'
-
-
-class BurgerShop(models.Model):
-    name = models.CharField(verbose_name='Название бургерной', max_length=256)
-    city = models.ForeignKey(City, verbose_name='Город')
-
-    class Meta:
-        verbose_name = 'Бургерная'
-        verbose_name_plural = 'Бургерные'
 
 
 class MenuItem(models.Model):
@@ -112,12 +120,29 @@ class Order(models.Model):
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
 
+    def __str__(self):
+        return u'Заказ № {0}'.format(self.pk)
+
+    def order_sum(self):
+        counter = 0
+        for item in self.order_items.all():
+            counter += item.price
+        return counter
+    order_sum.short_description = 'Стоимость заказа'
+
+    def order_burgershop(self):
+        return self.dealer.burgershop
+    order_burgershop.short_description = 'Бургерная'
+
 
 class OrderItem(models.Model):
     item = models.ForeignKey(MenuItem, verbose_name='Блюдо')
     price = models.DecimalField(verbose_name='Стоимость при покупке', max_digits=8, decimal_places=2)
-    order = models.ForeignKey(Order, verbose_name=u'Заказ')
+    order = models.ForeignKey(Order, verbose_name=u'Заказ', related_name='order_items')
 
     class Meta:
         verbose_name = 'Элемент заказа'
         verbose_name_plural = 'Элементы заказа'
+
+    def __str__(self):
+        return self.item.name

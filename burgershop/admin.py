@@ -11,15 +11,21 @@ app = apps.get_app_config('burgershop')
 
 
 class UserForm(forms.ModelForm):
-    new_password = forms.CharField(label='Новый пароль', widget=forms.PasswordInput)
+    new_password = forms.CharField(label='Новый пароль', widget=forms.PasswordInput, required=False)
 
     class Meta:
-        fields = ('username', 'is_staff', 'is_superuser', 'is_dealer')
+        fields = ('username', 'is_staff', 'is_superuser', 'is_dealer', 'burgershop')
         model = User
+
+    def clean(self):
+        cleaned_data = super(UserForm, self).clean()
+        if not cleaned_data['burgershop'] and cleaned_data['is_dealer']:
+            self.add_error('burgershop', 'Нужно указать место работы оператора')
 
     def save(self, commit=True):
         user = super(UserForm, self).save(commit)
-        user.set_password(self.cleaned_data["new_password"])
+        if self.cleaned_data["new_password"]:
+            user.set_password(self.cleaned_data["new_password"])
         if commit:
             user.save()
         return user
@@ -51,7 +57,7 @@ class OrderItemsInline(admin.TabularInline):
 
 class OrderAdmin(admin.ModelAdmin):
     inlines = (OrderItemsInline,)
-    readonly_fields = ('dealer',)
+    readonly_fields = ('dealer', 'order_sum', 'order_burgershop')
 
 
 class BurgerShopAdmin(admin.ModelAdmin):

@@ -21,5 +21,5 @@ class CategoryManager(TreeManager):
                 }
             return serialised
 
-        root_nodes = self.root_nodes().prefetch_related('child', 'items', 'child__items')
+        root_nodes = self.root_nodes()
         return node_iterator(root_nodes)
