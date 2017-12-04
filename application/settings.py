@@ -33,6 +33,14 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ALLOWED_HOSTS = ['*']
 
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = '/tmp' # change this to a proper location
+
+ADMINS = [
+    ('admin', 'admin@localhost')
+]
+
+
 # Application definition
 
 AUTH_USER_MODEL = 'burgershop.User'
