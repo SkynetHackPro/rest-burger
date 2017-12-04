@@ -4,3 +4,4 @@ pytz==2017.3
 dj-database-url==0.4.2
 psycopg2==2.7.3.2
 django-mptt==0.8.7
+whitenoise==3.3.1
